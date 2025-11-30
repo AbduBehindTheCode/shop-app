@@ -14,6 +14,8 @@ export interface Product {
   category: string;
 }
 
+export type UnitType = 'kg' | 'piece' | 'liter' | 'gram' | 'pack';
+
 // Category types
 export interface Category {
   id: string;

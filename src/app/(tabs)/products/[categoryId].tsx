@@ -21,13 +21,15 @@ export default function ProductsScreen() {
     setModalVisible(true);
   };
 
-  const handleAddToCart = (quantity: number) => {
+  const handleAddToCart = (quantity: number, unit: string) => {
     if (selectedProduct) {
       dispatch(
         addToCart({
           productId: selectedProduct.id,
           productName: selectedProduct.name,
+          productImage: selectedProduct.image,
           quantity,
+          unit
         })
       );
       setModalVisible(false);

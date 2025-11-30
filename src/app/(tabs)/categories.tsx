@@ -8,13 +8,16 @@ export default function CategoriesScreen() {
   const router = useRouter();
 
   const handleCategoryPress = (category: Category) => {
-    router.push({
-      pathname: './products/[categoryId]',
-      params: {
-        categoryId: category.id,
-        categoryName: category.name,
-      },
-    });
+    // Only navigate for vegetables category
+    if (category.id === '1') {
+      router.push({
+        pathname: './products/[categoryId]',
+        params: {
+          categoryId: category.id,
+          categoryName: category.name,
+        },
+      });
+    }
   };
 
   const renderCategoryCard = ({ item }: { item: Category }) => (

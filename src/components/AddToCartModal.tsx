@@ -9,14 +9,16 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Product } from '../types';
+import { Product, UnitType } from '../types';
 
 interface AddToCartModalProps {
   visible: boolean;
   product: Product | null;
-  onAdd: (quantity: number) => void;
+  onAdd: (quantity: number, unit: string) => void;
   onCancel: () => void;
 }
+
+const UNITS: UnitType[] = ['piece', 'kg', 'gram', 'liter', 'pack'];
 
 export const AddToCartModal: React.FC<AddToCartModalProps> = ({
   visible,
@@ -25,18 +27,28 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
   onCancel,
 }) => {
   const [quantity, setQuantity] = useState('1');
+  const [selectedUnit, setSelectedUnit] = useState<UnitType>('piece');
+  const [showUnitDropdown, setShowUnitDropdown] = useState(false);
 
   const handleAdd = () => {
     const qty = parseInt(quantity, 10);
     if (!isNaN(qty) && qty > 0) {
-      onAdd(qty);
+      onAdd(qty, selectedUnit);
       setQuantity('1'); // Reset quantity
+      setSelectedUnit('piece'); // Reset unit
     }
   };
 
   const handleCancel = () => {
     setQuantity('1'); // Reset quantity
+    setSelectedUnit('piece'); // Reset unit
+    setShowUnitDropdown(false);
     onCancel();
+  };
+
+  const handleUnitSelect = (unit: UnitType) => {
+    setSelectedUnit(unit);
+    setShowUnitDropdown(false);
   };
 
   if (!product) return null;
@@ -58,14 +70,45 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
             <Text style={styles.productName}>{product.name}</Text>
             
             <Text style={styles.label}>Quantity</Text>
-            <TextInput
-              style={styles.input}
-              value={quantity}
-              onChangeText={setQuantity}
-              keyboardType="numeric"
-              placeholder="Enter quantity"
-              autoFocus
-            />
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                value={quantity}
+                onChangeText={setQuantity}
+                keyboardType="numeric"
+                placeholder="1"
+              />
+              
+              <TouchableOpacity 
+                style={styles.unitSelector}
+                onPress={() => setShowUnitDropdown(!showUnitDropdown)}
+              >
+                <Text style={styles.unitText}>{selectedUnit}</Text>
+                <Text style={styles.dropdownIcon}>▼</Text>
+              </TouchableOpacity>
+            </View>
+
+            {showUnitDropdown && (
+              <View style={styles.dropdown}>
+                {UNITS.map((unit) => (
+                  <TouchableOpacity
+                    key={unit}
+                    style={[
+                      styles.dropdownItem,
+                      selectedUnit === unit && styles.dropdownItemSelected
+                    ]}
+                    onPress={() => handleUnitSelect(unit)}
+                  >
+                    <Text style={[
+                      styles.dropdownItemText,
+                      selectedUnit === unit && styles.dropdownItemTextSelected
+                    ]}>
+                      {unit}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
 
             <View style={styles.buttonContainer}>
               <TouchableOpacity
@@ -123,15 +166,66 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 8,
   },
-  input: {
+  inputRow: {
+    flexDirection: 'row',
+    gap: 8,
     width: '100%',
+    marginBottom: 16,
+  },
+  input: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
     padding: 12,
     fontSize: 18,
-    marginBottom: 24,
     textAlign: 'center',
+  },
+  unitSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#f8f9fa',
+  },
+  unitText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  dropdownIcon: {
+    fontSize: 10,
+    color: '#666',
+  },
+  dropdown: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  dropdownItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  dropdownItemSelected: {
+    backgroundColor: '#e3f2fd',
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  dropdownItemTextSelected: {
+    fontWeight: '600',
+    color: '#007AFF',
   },
   buttonContainer: {
     flexDirection: 'row',
