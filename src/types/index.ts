@@ -6,6 +6,14 @@ export interface User {
   partnerId?: string;
 }
 
+// Product types
+export interface Product {
+  id: string;
+  name: string;
+  image: string;
+  category: string;
+}
+
 // Category types
 export interface Category {
   id: string;
