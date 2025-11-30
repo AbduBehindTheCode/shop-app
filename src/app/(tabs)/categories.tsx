@@ -11,7 +11,7 @@ export default function CategoriesScreen() {
     // Only navigate for vegetables category
     if (category.id === '1') {
       router.push({
-        pathname: './products/[categoryId]',
+        pathname: './(products)/[categoryId]',
         params: {
           categoryId: category.id,
           categoryName: category.name,
