@@ -1,50 +1,101 @@
-# Welcome to your Expo app 👋
+# Shop App - Frontend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile application built with Expo for sharing shopping lists between couples.
 
-## Get started
+## Project Structure
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+shop-app/
+├── src/
+│   ├── screens/          # Screen components
+│   ├── navigation/       # Navigation configuration
+│   ├── components/       # Reusable components
+│   ├── store/           # Redux store & slices
+│   ├── services/        # API & notification services
+│   ├── types/           # TypeScript interfaces
+│   └── utils/           # Constants & utilities
+├── app.json             # Expo configuration
+├── package.json         # Dependencies
+└── .env.example         # Environment variables template
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Technologies
 
-## Learn more
+- **React Native** - Cross-platform mobile framework
+- **Expo** - Development platform for React Native
+- **TypeScript** - Type-safe development
+- **React Navigation** - Navigation library
+- **Redux Toolkit** - State management
+- **Axios** - HTTP client
+- **Expo Notifications** - Push notifications
 
-To learn more about developing your project with Expo, look at the following resources:
+## Getting Started
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Expo CLI: `npm install -g expo-cli`
 
-## Join the community
+### Installation
 
-Join our community of developers creating universal apps.
+1. Install dependencies:
+```bash
+npm install
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+2. Create `.env` file from `.env.example`:
+```bash
+cp .env.example .env
+```
+
+3. Update `.env` with your backend API URL
+
+### Running the App
+
+**For Android:**
+```bash
+npm run android
+```
+
+**For iOS (macOS only):**
+```bash
+npm run ios
+```
+
+**For Web:**
+```bash
+npm run web
+```
+
+**Using Expo Go (recommended for development):**
+```bash
+npx expo start
+```
+
+Then scan the QR code with Expo Go app on your phone.
+
+## Development Notes
+
+- All screens and services are scaffolded but not yet implemented
+- Redux store is configured and ready for slices
+- Navigation structure is set up with Bottom Tab Navigator
+- API client is ready with interceptors for future auth
+
+## Environment Variables
+
+Create a `.env` file with:
+```
+EXPO_PUBLIC_API_URL=http://your-backend-url/api
+```
+
+## Next Steps
+
+1. Implement screens (Categories, Cart, Profile)
+2. Create Redux slices for state management
+3. Build UI components
+4. Integrate with backend API
+5. Test notifications
+
+## License
+
+MIT
