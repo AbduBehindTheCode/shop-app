@@ -23,6 +23,7 @@ export default function HomeScreen() {
       dispatch(addToCart({
         productId: selectedProduct.id,
         productName: selectedProduct.name,
+        productImage: selectedProduct.image,
         quantity,
       }));
       setModalVisible(false);
@@ -38,7 +39,10 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Vegetables</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Vegetables</Text>
+          <Text style={styles.titleEmoji}>🥬</Text>
+        </View>
         <Text style={styles.subtitle}>Select products to add to cart</Text>
       </View>
       
@@ -76,11 +80,19 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 16,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 4,
     color: '#333',
+  },
+  titleEmoji: {
+    fontSize: 28,
   },
   subtitle: {
     fontSize: 14,
