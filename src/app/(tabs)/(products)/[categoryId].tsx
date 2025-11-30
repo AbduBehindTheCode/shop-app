@@ -1,6 +1,6 @@
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { AddToCartModal } from '@/components/AddToCartModal';
 import { ProductCard } from '@/components/ProductCard';
@@ -12,6 +12,8 @@ export default function ProductsScreen() {
   const dispatch = useAppDispatch();
   const allProducts = useAppSelector((state) => state.products.products);
   const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
+  const cartItems = useAppSelector((state: any) => state.cart.items);
+
 
   // Map category IDs to categories
   const getCategoryType = (id: string) => {
@@ -32,6 +34,8 @@ export default function ProductsScreen() {
   // Filter products by category
   const categoryType = getCategoryType(categoryId);
   const products = categoryType ? allProducts.filter((p) => p.category === categoryType) : allProducts;
+  const router = useRouter();
+
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -43,17 +47,44 @@ export default function ProductsScreen() {
 
   const handleAddToCart = (quantity: number, unit: string) => {
     if (selectedProduct) {
-      dispatch(
-        addToCart({
-          productId: selectedProduct.id,
-          productName: selectedProduct.name,
-          productImage: selectedProduct.image,
-          quantity,
-          unit
-        })
+      // Check if product with same unit already exists in cart
+      const existingItem = cartItems.find(
+        (item: any) => item.productId === selectedProduct.id && item.unit === unit
       );
-      setModalVisible(false);
-      setSelectedProduct(null);
+
+      if (existingItem) {
+        Alert.alert(
+          'Product Already in Cart',
+          `${selectedProduct.name} (${unit}) is already in your cart with quantity ${existingItem.quantity}.`,
+          [
+            {
+              text: 'View Cart',
+              onPress: () => {
+                setModalVisible(false);
+                setSelectedProduct(null);
+                router.push('/(tabs)/cart');
+              }
+            },
+         
+            {
+              text: 'Cancel',
+              style: 'cancel'
+            }
+          ]
+        );
+      } else {
+        dispatch(
+          addToCart({
+            productId: selectedProduct.id,
+            productName: selectedProduct.name,
+            productImage: selectedProduct.image,
+            quantity,
+            unit
+          })
+        );
+        setModalVisible(false);
+        setSelectedProduct(null);
+      }
     }
   };
 
