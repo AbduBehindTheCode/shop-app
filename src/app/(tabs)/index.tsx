@@ -1,68 +1,16 @@
-import { useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { AddToCartModal } from '../../components/AddToCartModal';
-import { ProductCard } from '../../components/ProductCard';
-import { addToCart } from '../../store/slices/cartSlice';
-import { useAppDispatch, useAppSelector } from '../../store/store';
-import { Product } from '../../types';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-  const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.products.products);
-  
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  const handleProductPress = (product: Product) => {
-    setSelectedProduct(product);
-    setModalVisible(true);
-  };
-
-  const handleAddToCart = (quantity: number) => {
-    if (selectedProduct) {
-      dispatch(addToCart({
-        productId: selectedProduct.id,
-        productName: selectedProduct.name,
-        quantity,
-      }));
-      setModalVisible(false);
-      setSelectedProduct(null);
-    }
-  };
-
-  const handleCancel = () => {
-    setModalVisible(false);
-    setSelectedProduct(null);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Vegetables</Text>
-        <Text style={styles.subtitle}>Select products to add to cart</Text>
+        <Text style={styles.title}>Welcome Home</Text>
+        <Text style={styles.subtitle}>Browse categories to explore products</Text>
       </View>
-      
-      <FlatList
-        data={products}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.gridContainer}
-        renderItem={({ item }) => (
-          <View style={styles.productWrapper}>
-            <ProductCard
-              product={item}
-              onPress={() => handleProductPress(item)}
-            />
-          </View>
-        )}
-      />
 
-      <AddToCartModal
-        visible={modalVisible}
-        product={selectedProduct}
-        onAdd={handleAddToCart}
-        onCancel={handleCancel}
-      />
+      <View style={styles.content}>
+        <Text style={styles.placeholderText}>Coming Soon</Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -73,7 +21,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   header: {
-    paddingTop: 50,
+    paddingTop: 24,
     paddingLeft: 20,
     paddingBottom: 16,
   },
@@ -87,11 +35,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  gridContainer: {
-    padding: 12,
-  },
-  productWrapper: {
+  content: {
     flex: 1,
-    maxWidth: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderText: {
+    fontSize: 18,
+    color: '#999',
   },
 });

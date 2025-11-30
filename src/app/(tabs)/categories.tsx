@@ -1,12 +1,20 @@
+import { useRouter } from 'expo-router';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { Category, CategoryCard } from '@/components/CategoryCard';
 import { CATEGORIES } from '@/utils/categories';
 
 export default function CategoriesScreen() {
+  const router = useRouter();
+
   const handleCategoryPress = (category: Category) => {
-    // Navigate to category products screen (you can implement this later)
-    console.log('Selected category:', category.name);
+    router.push({
+      pathname: './products/[categoryId]',
+      params: {
+        categoryId: category.id,
+        categoryName: category.name,
+      },
+    });
   };
 
   const renderCategoryCard = ({ item }: { item: Category }) => (
