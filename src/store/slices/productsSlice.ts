@@ -69,6 +69,129 @@ const initialState: ProductsState = {
       image: '🍃',
       category: 'vegetable',
     },
+    // Meats
+    {
+      id: '11',
+      name: 'Chicken Breast',
+      image: '🍗',
+      category: 'meat',
+    },
+    {
+      id: '12',
+      name: 'Lamb',
+      image: '🐑',
+      category: 'meat',
+    },
+    {
+      id: '13',
+      name: 'Fish Fillet',
+      image: '🐟',
+      category: 'meat',
+    },
+    {
+      id: '14',
+      name: 'Jambon',
+      image: '🥓',
+      category: 'meat',
+    },
+    {
+      id: '15',
+      name: 'Chicken Wings',
+      image: '🍗',
+      category: 'meat',
+    },
+    {
+      id: '16',
+      name: 'Ground Beef',
+      image: '🥩',
+      category: 'meat',
+    },
+    // Supermarket
+    {
+      id: '17',
+      name: 'Bread',
+      image: '🍞',
+      category: 'supermarket',
+    },
+    {
+      id: '18',
+      name: 'Yogurt',
+      image: '🥛',
+      category: 'supermarket',
+    },
+    {
+      id: '19',
+      name: 'Milk',
+      image: '🥛',
+      category: 'supermarket',
+    },
+    {
+      id: '20',
+      name: 'Cheese',
+      image: '🧀',
+      category: 'supermarket',
+    },
+    {
+      id: '21',
+      name: 'Greek Yogurt',
+      image: '🥛',
+      category: 'supermarket',
+    },
+    {
+      id: '22',
+      name: 'Eggs',
+      image: '🥚',
+      category: 'supermarket',
+    },
+    {
+      id: '23',
+      name: 'Coffee',
+      image: '☕',
+      category: 'supermarket',
+    },
+    {
+      id: '24',
+      name: 'Chocolate',
+      image: '🍫',
+      category: 'supermarket',
+    },
+    {
+      id: '25',
+      name: 'Chips',
+      image: '🍟',
+      category: 'supermarket',
+    },
+    // Cleaning
+    {
+      id: '26',
+      name: 'Bleach',
+      image: '🧪',
+      category: 'cleaning',
+    },
+    {
+      id: '27',
+      name: 'Toilet Paper',
+      image: '🧻',
+      category: 'cleaning',
+    },
+    {
+      id: '28',
+      name: 'Liquid Soap',
+      image: '🧼',
+      category: 'cleaning',
+    },
+    {
+      id: '29',
+      name: 'Washing Machine Liquid',
+      image: '🧺',
+      category: 'cleaning',
+    },
+    {
+      id: '30',
+      name: 'Dishwasher Liquid',
+      image: '🍽️',
+      category: 'cleaning',
+    },
   ],
 };
 

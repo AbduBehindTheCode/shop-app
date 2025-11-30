@@ -8,8 +8,8 @@ export default function CategoriesScreen() {
   const router = useRouter();
 
   const handleCategoryPress = (category: Category) => {
-    // Only navigate for vegetables category
-    if (category.id === '1') {
+    // Navigate for vegetables, supermarket, cleaning, and meats categories
+    if (category.id === '1' || category.id === '2' || category.id === '3' || category.id === '4') {
       router.push({
         pathname: './(products)/[categoryId]',
         params: {

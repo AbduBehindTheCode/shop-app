@@ -10,8 +10,28 @@ import { Product } from '@/types';
 
 export default function ProductsScreen() {
   const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.products.products);
-  const { categoryName } = useLocalSearchParams<{ categoryName: string }>();
+  const allProducts = useAppSelector((state) => state.products.products);
+  const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
+
+  // Map category IDs to categories
+  const getCategoryType = (id: string) => {
+    switch (id) {
+      case '1':
+        return 'vegetable';
+      case '2':
+        return 'supermarket';
+      case '3':
+        return 'cleaning';
+      case '4':
+        return 'meat';
+      default:
+        return null;
+    }
+  };
+
+  // Filter products by category
+  const categoryType = getCategoryType(categoryId);
+  const products = categoryType ? allProducts.filter((p) => p.category === categoryType) : allProducts;
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
