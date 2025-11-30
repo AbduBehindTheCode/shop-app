@@ -62,7 +62,7 @@ export default function CartScreen() {
                   <Text style={styles.quantityButtonText}>−</Text>
                 </TouchableOpacity>
                 
-                <Text style={styles.quantity}>{item.quantity}</Text>
+                <Text style={styles.quantity}>{item.quantity} {item.unit}</Text>
                 
                 <TouchableOpacity
                   style={styles.quantityButton}

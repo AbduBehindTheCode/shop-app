@@ -5,6 +5,7 @@ interface CartItem {
   productName: string;
   productImage: string;
   quantity: number;
+  unit: string;
 }
 
 interface CartState {
@@ -19,10 +20,10 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<{ productId: string; productName: string; productImage: string; quantity: number }>) => {
-      const { productId, productName, productImage, quantity } = action.payload;
+    addToCart: (state, action: PayloadAction<{ productId: string; productName: string; productImage: string; quantity: number; unit: string }>) => {
+      const { productId, productName, productImage, quantity, unit } = action.payload;
       
-      const existingItem = state.items.find(item => item.productId === productId);
+      const existingItem = state.items.find(item => item.productId === productId && item.unit === unit);
       
       if (existingItem) {
         existingItem.quantity += quantity;
@@ -32,6 +33,7 @@ const cartSlice = createSlice({
           productName,
           productImage,
           quantity,
+          unit,
         });
       }
       
