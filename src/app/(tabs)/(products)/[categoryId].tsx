@@ -6,6 +6,7 @@ import { AddToCartModal } from '@/components/AddToCartModal';
 import { ProductCard } from '@/components/ProductCard';
 import { Toast } from '@/components/ui/Toast';
 import { useToast } from '@/hooks/useToast';
+import { NotificationService } from '@/services/notificationService';
 import { addToCart } from '@/store/slices/cartSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Product } from '@/types';
@@ -15,6 +16,7 @@ export default function ProductsScreen() {
   const allProducts = useAppSelector((state) => state.products.products);
   const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
   const cartItems = useAppSelector((state: any) => state.cart.items);
+  const notificationPreferences = useAppSelector((state) => state.notifications.preferences);
   const { toast, showToast, hideToast } = useToast();
 
 
@@ -78,16 +80,11 @@ export default function ProductsScreen() {
           })
         );
         
-        showToast(
-          `${selectedProduct.name} added to cart`,
-          'success',
-          'View Cart',
-          () => {
-            hideToast();
-            router.push('/(tabs)/cart');
-          }
-        );
-        
+        // Send push notification if enabled
+        if (notificationPreferences.cartAddItemEnabled) {
+          NotificationService.notifyItemAdded(selectedProduct.name, quantity, unit);
+        }
+
         setModalVisible(false);
         setSelectedProduct(null);
       }

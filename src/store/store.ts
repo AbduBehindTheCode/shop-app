@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import cartReducer from './slices/cartSlice';
+import notificationsReducer from './slices/notificationsSlice';
 import productsReducer from './slices/productsSlice';
 
 // Import slices (will be created)
@@ -11,6 +12,7 @@ export const store = configureStore({
   reducer: {
     cart: cartReducer,
     products: productsReducer,
+    notifications: notificationsReducer,
     // categories: categoriesReducer,
     // user: userReducer,
   },

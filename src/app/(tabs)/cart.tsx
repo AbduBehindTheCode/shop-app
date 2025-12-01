@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { NotificationService } from '@/services/notificationService';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { removeFromCart, updateQuantity } from '../../store/slices/cartSlice';
 import { useAppDispatch, useAppSelector } from '../../store/store';
@@ -6,9 +7,16 @@ import { useAppDispatch, useAppSelector } from '../../store/store';
 export default function CartScreen() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
+  const notificationPreferences = useAppSelector((state) => state.notifications.preferences);
 
   const handleRemove = (productId: string, unit: string) => {
+    const item = cartItems.find(i => i.productId === productId && i.unit === unit);
     dispatch(removeFromCart({ productId, unit }));
+    
+    // Send push notification if enabled
+    if (notificationPreferences.cartRemoveItemEnabled && item) {
+      NotificationService.notifyItemRemoved(item.productName);
+    }
   };
 
   const handleQuantityChange = (productId: string, unit: string, delta: number) => {
@@ -17,6 +25,11 @@ export default function CartScreen() {
       const newQuantity = item.quantity + delta;
       if (newQuantity > 0) {
         dispatch(updateQuantity({ productId, unit, quantity: newQuantity }));
+        
+        // Send push notification if enabled
+        if (notificationPreferences.cartUpdateItemEnabled) {
+          NotificationService.notifyItemUpdated(item.productName, newQuantity, unit);
+        }
       }
     }
   };
