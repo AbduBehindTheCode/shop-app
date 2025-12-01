@@ -25,13 +25,11 @@ export interface Category {
 
 // Cart item types
 export interface CartItem {
-  id: string;
-  categoryId: string;
-  name: string;
+  productId: string;
+  productName: string;
+  productImage: string;
   quantity: number;
-  purchased: boolean;
-  addedBy: string;
-  addedAt: Date;
+  unit: string;
 }
 
 // Shopping list types

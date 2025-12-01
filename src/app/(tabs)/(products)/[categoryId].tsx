@@ -1,9 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { AddToCartModal } from '@/components/AddToCartModal';
 import { ProductCard } from '@/components/ProductCard';
+import { Toast } from '@/components/ui/Toast';
+import { useToast } from '@/hooks/useToast';
 import { addToCart } from '@/store/slices/cartSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Product } from '@/types';
@@ -13,6 +15,7 @@ export default function ProductsScreen() {
   const allProducts = useAppSelector((state) => state.products.products);
   const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
   const cartItems = useAppSelector((state: any) => state.cart.items);
+  const { toast, showToast, hideToast } = useToast();
 
 
   // Map category IDs to categories
@@ -47,31 +50,23 @@ export default function ProductsScreen() {
 
   const handleAddToCart = (quantity: number, unit: string) => {
     if (selectedProduct) {
-      // Check if product with same unit already exists in cart
+      // Check if product already exists in cart (regardless of unit)
       const existingItem = cartItems.find(
-        (item: any) => item.productId === selectedProduct.id && item.unit === unit
+        (item: any) => item.productId === selectedProduct.id
       );
 
       if (existingItem) {
-        Alert.alert(
-          'Product Already in Cart',
-          `${selectedProduct.name} (${unit}) is already in your cart with quantity ${existingItem.quantity}.`,
-          [
-            {
-              text: 'View Cart',
-              onPress: () => {
-                setModalVisible(false);
-                setSelectedProduct(null);
-                router.push('/(tabs)/cart');
-              }
-            },
-         
-            {
-              text: 'Cancel',
-              style: 'cancel'
-            }
-          ]
+        showToast(
+          `${selectedProduct.name} is already in cart`,
+          'warning',
+          'View Cart',
+          () => {
+            hideToast();
+            router.push('/(tabs)/cart');
+          }
         );
+        setModalVisible(false);
+        setSelectedProduct(null);
       } else {
         dispatch(
           addToCart({
@@ -82,6 +77,17 @@ export default function ProductsScreen() {
             unit
           })
         );
+        
+        showToast(
+          `${selectedProduct.name} added to cart`,
+          'success',
+          'View Cart',
+          () => {
+            hideToast();
+            router.push('/(tabs)/cart');
+          }
+        );
+        
         setModalVisible(false);
         setSelectedProduct(null);
       }
@@ -120,6 +126,15 @@ export default function ProductsScreen() {
         product={selectedProduct}
         onAdd={handleAddToCart}
         onCancel={handleCancel}
+      />
+
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={hideToast}
+        actionText={toast.actionText}
+        onActionPress={toast.onActionPress}
       />
     </SafeAreaView>
   );

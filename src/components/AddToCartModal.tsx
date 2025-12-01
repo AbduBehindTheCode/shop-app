@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Product, UnitType } from '../types';
+import { UNITS } from '../utils/constants';
+import { Button } from './ui/button';
 
 interface AddToCartModalProps {
   visible: boolean;
   product: Product | null;
   onAdd: (quantity: number, unit: string) => void;
   onCancel: () => void;
-}
-
-const UNITS: UnitType[] = ['piece', 'kg', 'gram', 'liter', 'pack'];
-
-export const AddToCartModal: React.FC<AddToCartModalProps> = ({
+}export const AddToCartModal: React.FC<AddToCartModalProps> = ({
   visible,
   product,
   onAdd,
@@ -111,19 +109,19 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
             )}
 
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.cancelButton]}
+              <Button
+                title="Cancel"
+                variant="secondary"
                 onPress={handleCancel}
-              >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
+                style={{ flex: 1 }}
+              />
               
-              <TouchableOpacity
-                style={[styles.button, styles.addButton]}
+              <Button
+                title="Add"
+                variant="primary"
                 onPress={handleAdd}
-              >
-                <Text style={styles.addButtonText}>Add</Text>
-              </TouchableOpacity>
+                style={{ flex: 1 }}
+              />
             </View>
           </View>
         </View>
@@ -231,27 +229,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     width: '100%',
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#f5f5f5',
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#666',
-  },
-  addButton: {
-    backgroundColor: '#007AFF',
-  },
-  addButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
   },
 });

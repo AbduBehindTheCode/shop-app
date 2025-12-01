@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { removeFromCart, updateQuantity } from '../../store/slices/cartSlice';
 import { useAppDispatch, useAppSelector } from '../../store/store';
@@ -6,16 +7,16 @@ export default function CartScreen() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
 
-  const handleRemove = (productId: string) => {
-    dispatch(removeFromCart(productId));
+  const handleRemove = (productId: string, unit: string) => {
+    dispatch(removeFromCart({ productId, unit }));
   };
 
-  const handleQuantityChange = (productId: string, delta: number) => {
-    const item = cartItems.find(i => i.productId === productId);
+  const handleQuantityChange = (productId: string, unit: string, delta: number) => {
+    const item = cartItems.find(i => i.productId === productId && i.unit === unit);
     if (item) {
       const newQuantity = item.quantity + delta;
       if (newQuantity > 0) {
-        dispatch(updateQuantity({ productId, quantity: newQuantity }));
+        dispatch(updateQuantity({ productId, unit, quantity: newQuantity }));
       }
     }
   };
@@ -44,7 +45,7 @@ export default function CartScreen() {
       
       <FlatList
         data={cartItems}
-        keyExtractor={(item, index) => `${item.productId}-${index}`}
+        keyExtractor={(item) => `${item.productId}-${item.unit}`}
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
           <View style={styles.cartItem}>
@@ -57,7 +58,7 @@ export default function CartScreen() {
               <View style={styles.quantityContainer}>
                 <TouchableOpacity
                   style={styles.quantityButton}
-                  onPress={() => handleQuantityChange(item.productId, -1)}
+                  onPress={() => handleQuantityChange(item.productId, item.unit, -1)}
                 >
                   <Text style={styles.quantityButtonText}>−</Text>
                 </TouchableOpacity>
@@ -66,19 +67,19 @@ export default function CartScreen() {
                 
                 <TouchableOpacity
                   style={styles.quantityButton}
-                  onPress={() => handleQuantityChange(item.productId, 1)}
+                  onPress={() => handleQuantityChange(item.productId, item.unit, 1)}
                 >
                   <Text style={styles.quantityButtonText}>+</Text>
                 </TouchableOpacity>
               </View>
             </View>
             
-            <TouchableOpacity
-              style={styles.removeButton}
-              onPress={() => handleRemove(item.productId)}
-            >
-              <Text style={styles.removeButtonText}>Remove</Text>
-            </TouchableOpacity>
+            <Button
+              title="Remove"
+              variant="danger"
+              onPress={() => handleRemove(item.productId, item.unit)}
+              style={styles.removeButtonOverride}
+            />
           </View>
         )}
       />
@@ -178,16 +179,10 @@ const styles = StyleSheet.create({
     minWidth: 30,
     textAlign: 'center',
   },
-  removeButton: {
+  removeButtonOverride: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: '#ff3b30',
-    borderRadius: 8,
-  },
-  removeButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    minHeight: 36,
   },
   emptyContainer: {
     flex: 1,
