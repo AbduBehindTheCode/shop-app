@@ -1,45 +1,81 @@
+import { useAppSelector } from '@/store/store';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Product, UnitType } from '../types';
+import { Product, ProductTag, UnitType } from '../types';
 import { UNITS } from '../utils/constants';
 import { Button } from './ui/button';
+import { TagSelector } from './ui/TagSelector';
 
 interface AddToCartModalProps {
   visible: boolean;
   product: Product | null;
-  onAdd: (quantity: number, unit: string) => void;
+  onAdd: (quantity: number, unit: string, tags: ProductTag[]) => void;
   onCancel: () => void;
-}export const AddToCartModal: React.FC<AddToCartModalProps> = ({
+}
+
+export const AddToCartModal: React.FC<AddToCartModalProps> = ({
   visible,
   product,
   onAdd,
   onCancel,
 }) => {
+  const router = useRouter();
+  const cartItems = useAppSelector((state) => state.cart.items);
+  
   const [quantity, setQuantity] = useState('1');
   const [selectedUnit, setSelectedUnit] = useState<UnitType>('piece');
+  const [selectedTags, setSelectedTags] = useState<ProductTag[]>([]);
   const [showUnitDropdown, setShowUnitDropdown] = useState(false);
 
   const handleAdd = () => {
     const qty = parseInt(quantity, 10);
-    if (!isNaN(qty) && qty > 0) {
-      onAdd(qty, selectedUnit);
-      setQuantity('1'); // Reset quantity
-      setSelectedUnit('piece'); // Reset unit
+    if (!isNaN(qty) && qty > 0 && product) {
+      // Check if product already exists in cart (any unit)
+      const productExistsWithDifferentUnit = cartItems.find(
+        item => item.productId === product.id && item.unit !== selectedUnit
+      );
+
+      if (productExistsWithDifferentUnit) {
+        Alert.alert(
+          'Product in Cart',
+          `${product.name} is already in your cart with ${productExistsWithDifferentUnit.quantity} ${productExistsWithDifferentUnit.unit}. Please remove it first or update the quantity in cart.`,
+          [
+            {
+              text: 'View Cart',
+              onPress: () => {
+                handleCancel();
+                router.push('/(tabs)/cart');
+              },
+            },
+            { text: 'Cancel', style: 'cancel' },
+          ]
+        );
+        return;
+      }
+
+      onAdd(qty, selectedUnit, selectedTags);
+      setQuantity('1');
+      setSelectedUnit('piece');
+      setSelectedTags([]);
     }
   };
 
   const handleCancel = () => {
-    setQuantity('1'); // Reset quantity
-    setSelectedUnit('piece'); // Reset unit
+    setQuantity('1');
+    setSelectedUnit('piece');
+    setSelectedTags([]);
     setShowUnitDropdown(false);
     onCancel();
   };
@@ -47,6 +83,14 @@ interface AddToCartModalProps {
   const handleUnitSelect = (unit: UnitType) => {
     setSelectedUnit(unit);
     setShowUnitDropdown(false);
+  };
+
+  const handleTagToggle = (tag: ProductTag) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
   };
 
   if (!product) return null;
@@ -63,7 +107,8 @@ interface AddToCartModalProps {
         style={styles.overlay}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+            <View style={styles.modalContent}>
             <Text style={styles.productImage}>{product.image}</Text>
             <Text style={styles.productName}>{product.name}</Text>
             
@@ -108,6 +153,11 @@ interface AddToCartModalProps {
               </View>
             )}
 
+            <TagSelector 
+              selectedTags={selectedTags}
+              onTagToggle={handleTagToggle}
+            />
+
             <View style={styles.buttonContainer}>
               <Button
                 title="Cancel"
@@ -124,6 +174,7 @@ interface AddToCartModalProps {
               />
             </View>
           </View>
+          </ScrollView>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -138,22 +189,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    width: '85%',
-    maxWidth: 400,
+    width: '90%',
+    maxHeight: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  scrollView: {
+    maxHeight: '100%',
   },
   modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
     padding: 24,
-    alignItems: 'center',
   },
   productImage: {
     fontSize: 64,
+    textAlign: 'center',
     marginBottom: 16,
   },
   productName: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: 'bold',
+    textAlign: 'center',
     color: '#333',
     marginBottom: 24,
   },

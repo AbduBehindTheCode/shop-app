@@ -116,7 +116,7 @@ const initialState: ProductsState = {
     {
       id: '18',
       name: 'Yogurt',
-      image: '🥛',
+      image: '🥣',
       category: 'supermarket',
     },
     {
@@ -161,33 +161,75 @@ const initialState: ProductsState = {
       image: '🍟',
       category: 'supermarket',
     },
-    // Cleaning
     {
       id: '26',
+      name: 'Rice',
+      image: '🍚',
+      category: 'supermarket',
+    },
+    {
+      id: '27',
+      name: 'Pasta',
+      image: '🍝',
+      category: 'supermarket',
+    },
+    {
+      id: '28',
+      name: 'Cake',
+      image: '🍰',
+      category: 'supermarket',
+    },
+    {
+      id: '29',
+      name: 'Nuts',
+      image: '🥜',
+      category: 'supermarket',
+    },
+    {
+      id: '30',
+      name: 'Honey',
+      image: '🍯',
+      category: 'supermarket',
+    },
+    {
+      id: '31',
+      name: 'Oats',
+      image: '🌾',
+      category: 'supermarket',
+    },
+    {
+      id: '32',
+      name: 'Flour',
+      image: '🫙',
+      category: 'supermarket',
+    },
+    // Cleaning
+    {
+      id: '33',
       name: 'Bleach',
       image: '🧪',
       category: 'cleaning',
     },
     {
-      id: '27',
+      id: '34',
       name: 'Toilet Paper',
       image: '🧻',
       category: 'cleaning',
     },
     {
-      id: '28',
+      id: '35',
       name: 'Liquid Soap',
       image: '🧼',
       category: 'cleaning',
     },
     {
-      id: '29',
+      id: '36',
       name: 'Washing Machine Liquid',
       image: '🧺',
       category: 'cleaning',
     },
     {
-      id: '30',
+      id: '37',
       name: 'Dishwasher Liquid',
       image: '🍽️',
       category: 'cleaning',

@@ -10,3 +10,10 @@ export const NOTIFICATION_TYPES = {
   ITEM_PURCHASED: 'item_purchased',
   LIST_CLEARED: 'list_cleared',
 } as const;
+
+// Product tags
+export const PRODUCT_TAGS = [
+  { id: 'urgent', label: 'Urgent', color: '#FF6B6B', emoji: '🔴' },
+  { id: 'wait-for-sale', label: 'Wait for Sale', color: '#4ECDC4', emoji: '💰' },
+  { id: 'important', label: 'Important', color: '#FFD93D', emoji: '⭐' },
+] as const;

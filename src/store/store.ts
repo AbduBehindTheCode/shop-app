@@ -4,7 +4,6 @@ import cartReducer from './slices/cartSlice';
 import notificationsReducer from './slices/notificationsSlice';
 import productsReducer from './slices/productsSlice';
 
-// Import slices (will be created)
 // import categoriesReducer from './slices/categoriesSlice';
 // import userReducer from './slices/userSlice';
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CartItem } from '../../types';
+import { CartItem, ProductTag } from '../../types';
 
 interface CartState {
   items: CartItem[];
@@ -13,13 +13,25 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<{ productId: string; productName: string; productImage: string; quantity: number; unit: string }>) => {
-      const { productId, productName, productImage, quantity, unit } = action.payload;
+    addToCart: (state, action: PayloadAction<{ 
+      productId: string; 
+      productName: string; 
+      productImage: string; 
+      quantity: number; 
+      unit: string;
+      tags?: ProductTag[];
+    }>) => {
+      const { productId, productName, productImage, quantity, unit, tags } = action.payload;
       
       const existingItem = state.items.find(item => item.productId === productId && item.unit === unit);
       
       if (existingItem) {
         existingItem.quantity += quantity;
+        // Merge tags if new tags are provided
+        if (tags && tags.length > 0) {
+          const currentTags = existingItem.tags || [];
+          existingItem.tags = Array.from(new Set([...currentTags, ...tags]));
+        }
       } else {
         state.items.push({
           productId,
@@ -27,11 +39,9 @@ const cartSlice = createSlice({
           productImage,
           quantity,
           unit,
+          tags: tags || [],
         });
       }
-      
-      // Log to console as requested
-      console.log(`Added to cart: ${productName}, Quantity: ${quantity}`);
     },
     removeFromCart: (state, action: PayloadAction<{ productId: string; unit: string }>) => {
       state.items = state.items.filter(item => 
@@ -46,11 +56,19 @@ const cartSlice = createSlice({
         item.quantity = action.payload.quantity;
       }
     },
+    updateTags: (state, action: PayloadAction<{ productId: string; unit: string; tags: ProductTag[] }>) => {
+      const item = state.items.find(item => 
+        item.productId === action.payload.productId && item.unit === action.payload.unit
+      );
+      if (item) {
+        item.tags = action.payload.tags;
+      }
+    },
     clearCart: (state) => {
       state.items = [];
     },
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateQuantity, updateTags, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

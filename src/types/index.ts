@@ -16,6 +16,8 @@ export interface Product {
 
 export type UnitType = 'kg' | 'piece' | 'liter' | 'gram' | 'pack';
 
+export type ProductTag = 'urgent' | 'wait-for-sale' | 'important';
+
 // Category types
 export interface Category {
   id: string;
@@ -30,6 +32,7 @@ export interface CartItem {
   productImage: string;
   quantity: number;
   unit: string;
+  tags?: ProductTag[];
 }
 
 // Shopping list types

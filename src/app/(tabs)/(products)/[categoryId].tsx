@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { AddToCartModal } from '@/components/AddToCartModal';
 import { ProductCard } from '@/components/ProductCard';
@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/useToast';
 import { NotificationService } from '@/services/notificationService';
 import { addToCart } from '@/store/slices/cartSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { Product } from '@/types';
+import { Product, ProductTag } from '@/types';
 
 export default function ProductsScreen() {
   const dispatch = useAppDispatch();
@@ -50,45 +50,48 @@ export default function ProductsScreen() {
     setModalVisible(true);
   };
 
-  const handleAddToCart = (quantity: number, unit: string) => {
-    if (selectedProduct) {
-      // Check if product already exists in cart (regardless of unit)
-      const existingItem = cartItems.find(
-        (item: any) => item.productId === selectedProduct.id
+  const handleAddToCart = (quantity: number, unit: string, tags: ProductTag[]) => {
+    if (!selectedProduct) return;
+
+    // Check if product exists in cart (any unit)
+    const productExistsInCart = cartItems.find(
+      (item: any) => item.productId === selectedProduct.id
+    );
+
+    if (productExistsInCart) {
+      Alert.alert(
+        'Product in Cart',
+        `${selectedProduct.name} is already in your cart`,
+        [
+          {
+            text: 'View Cart',
+            onPress: () => {
+              setModalVisible(false);
+              router.push('/(tabs)/cart');
+            },
+          },
+          { text: 'Cancel', style: 'cancel' },
+        ]
       );
-
-      if (existingItem) {
-        showToast(
-          `${selectedProduct.name} is already in cart`,
-          'warning',
-          'View Cart',
-          () => {
-            hideToast();
-            router.push('/(tabs)/cart');
-          }
-        );
-        setModalVisible(false);
-        setSelectedProduct(null);
-      } else {
-        dispatch(
-          addToCart({
-            productId: selectedProduct.id,
-            productName: selectedProduct.name,
-            productImage: selectedProduct.image,
-            quantity,
-            unit
-          })
-        );
-        
-        // Send push notification if enabled
-        if (notificationPreferences.cartAddItemEnabled) {
-          NotificationService.notifyItemAdded(selectedProduct.name, quantity, unit);
-        }
-
-        setModalVisible(false);
-        setSelectedProduct(null);
-      }
+      return;
     }
+
+    // Add to cart
+    dispatch(addToCart({
+      productId: selectedProduct.id,
+      productName: selectedProduct.name,
+      productImage: selectedProduct.image,
+      quantity,
+      unit,
+      tags,
+    }));
+
+    // Send push notification if enabled
+    if (notificationPreferences.cartAddItemEnabled) {
+      NotificationService.notifyItemAdded(selectedProduct.name, quantity, unit);
+    }
+
+    setModalVisible(false);
   };
 
   const handleCancel = () => {
