@@ -13,8 +13,7 @@ export default function ProfileScreen() {
   };
 
   const handleAccount = () => {
-    // TODO: Navigate to account settings
-    console.log('Navigate to account settings');
+    router.push('/account');
   };
 
   const handlePrivacy = () => {
