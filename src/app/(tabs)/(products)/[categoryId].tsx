@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { AddToCartModal } from '@/components/AddToCartModal';
@@ -7,39 +7,49 @@ import { ProductCard } from '@/components/ProductCard';
 import { Toast } from '@/components/ui/Toast';
 import { useToast } from '@/hooks/useToast';
 import { NotificationService } from '@/services/notificationService';
-import { addToCart } from '@/store/slices/cartSlice';
+import { productsService } from '@/services/products.service';
 import { useAppDispatch, useAppSelector } from '@/store/store';
+import { addToCart } from '@/store/thunks/cartThunks';
 import { Product, ProductTag } from '@/types';
 
 export default function ProductsScreen() {
   const dispatch = useAppDispatch();
-  const allProducts = useAppSelector((state) => state.products.products);
+  const categories = useAppSelector((state) => state.categories.categories);
   const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
   const cartItems = useAppSelector((state: any) => state.cart.items);
   const notificationPreferences = useAppSelector((state) => state.notifications.preferences);
   const { toast, showToast, hideToast } = useToast();
-
-
-  // Map category IDs to categories
-  const getCategoryType = (id: string) => {
-    switch (id) {
-      case '1':
-        return 'vegetable';
-      case '2':
-        return 'supermarket';
-      case '3':
-        return 'cleaning';
-      case '4':
-        return 'meat';
-      default:
-        return null;
-    }
-  };
-
-  // Filter products by category
-  const categoryType = getCategoryType(categoryId);
-  const products = categoryType ? allProducts.filter((p) => p.category === categoryType) : allProducts;
   const router = useRouter();
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch products by category
+  useEffect(() => {
+    const fetchCategoryProducts = async () => {
+      if (!categoryId || !categories.length) return;
+
+      try {
+        setLoading(true);
+        // Find the actual category from Redux to get its real UUID
+        const category = categories.find(cat => cat.id === categoryId);
+        if (!category) {
+          console.error('Category not found');
+          return;
+        }
+        
+        // Use the category's UUID to query products
+        const data = await productsService.getProductsByCategory(category.id);
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategoryProducts();
+  }, [categoryId, categories]);
 
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,9 +63,9 @@ export default function ProductsScreen() {
   const handleAddToCart = (quantity: number, unit: string, tags: ProductTag[]) => {
     if (!selectedProduct) return;
 
-    // Check if product exists in cart (any unit)
+    // Check if product exists in cart
     const productExistsInCart = cartItems.find(
-      (item: any) => item.productId === selectedProduct.id
+      (item: any) => item.product_id === selectedProduct.id
     );
 
     if (productExistsInCart) {
@@ -76,15 +86,8 @@ export default function ProductsScreen() {
       return;
     }
 
-    // Add to cart
-    dispatch(addToCart({
-      productId: selectedProduct.id,
-      productName: selectedProduct.name,
-      productImage: selectedProduct.image,
-      quantity,
-      unit,
-      tags,
-    }));
+    // Add to cart using new thunk
+    dispatch(addToCart(selectedProduct.id, quantity, tags) as any);
 
     // Send push notification if enabled
     if (notificationPreferences.cartAddItemEnabled) {
@@ -105,7 +108,6 @@ export default function ProductsScreen() {
         <Text style={styles.title}>{categoryName || 'Products'}</Text>
         <Text style={styles.subtitle}>Select products to add to cart</Text>
       </View>
-
       <FlatList
         data={products}
         keyExtractor={(item) => item.id}

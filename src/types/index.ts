@@ -27,15 +27,7 @@ export interface Category {
   icon: string;
 }
 
-// Cart item types
-export interface CartItem {
-  productId: string;
-  productName: string;
-  productImage: string;
-  quantity: number;
-  unit: string;
-  tags?: ProductTag[];
-}
+
 
 // Shopping list types
 export interface ShoppingList {
@@ -67,3 +59,26 @@ export interface SignInRequest {
   password: string;
 }
 
+
+export interface CartItem {
+  id: string;
+  household_id: string;
+  product_id: string;
+  quantity: number;
+  tags: ProductTag[];
+  added_by_user_id: string;
+  created_at: string;
+  updated_at: string;
+  product?: Product;
+  added_by?: User;
+}
+export interface AddToCartRequest {
+  product_id: string;
+  quantity: number;
+  tags?: ProductTag[];
+}
+
+export interface UpdateCartItemRequest {
+  quantity?: number;
+  tags?: ProductTag[];
+}

@@ -3,56 +3,56 @@ import { TagBadge } from '@/components/ui/TagBadge';
 import { TagSelector } from '@/components/ui/TagSelector';
 import { NotificationService } from '@/services/notificationService';
 import { ProductTag } from '@/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { removeFromCart, updateQuantity, updateTags } from '../../store/slices/cartSlice';
 import { useAppDispatch, useAppSelector } from '../../store/store';
+import { fetchCart, removeFromCart, updateCartQuantity, updateCartTags } from '../../store/thunks/cartThunks';
 
 export default function CartScreen() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
   const notificationPreferences = useAppSelector((state) => state.notifications.preferences);
   
-  const [editingTags, setEditingTags] = useState<{ productId: string; unit: string } | null>(null);
+  const [editingTags, setEditingTags] = useState<string | null>(null);
   const [tempTags, setTempTags] = useState<ProductTag[]>([]);
 
-  const handleRemove = (productId: string, unit: string) => {
-    const item = cartItems.find(i => i.productId === productId && i.unit === unit);
-    dispatch(removeFromCart({ productId, unit }));
+  useEffect(() => {
+    dispatch(fetchCart() as any);
+  }, [dispatch]);
+
+  const handleRemove = (cartItemId: string) => {
+    const item = cartItems.find(i => i.id === cartItemId);
+    dispatch(removeFromCart(cartItemId) as any);
     
     // Send push notification if enabled
-    if (notificationPreferences.cartRemoveItemEnabled && item) {
-      NotificationService.notifyItemRemoved(item.productName);
+    if (notificationPreferences.cartRemoveItemEnabled && item?.product) {
+      NotificationService.notifyItemRemoved(item.product.name);
     }
   };
 
-  const handleQuantityChange = (productId: string, unit: string, delta: number) => {
-    const item = cartItems.find(i => i.productId === productId && i.unit === unit);
+  const handleQuantityChange = (cartItemId: string, delta: number) => {
+    const item = cartItems.find(i => i.id === cartItemId);
     if (item) {
       const newQuantity = item.quantity + delta;
       if (newQuantity > 0) {
-        dispatch(updateQuantity({ productId, unit, quantity: newQuantity }));
+        dispatch(updateCartQuantity(cartItemId, newQuantity) as any);
         
         // Send push notification if enabled
-        if (notificationPreferences.cartUpdateItemEnabled) {
-          NotificationService.notifyItemUpdated(item.productName, newQuantity, unit);
+        if (notificationPreferences.cartUpdateItemEnabled && item.product) {
+          NotificationService.notifyItemUpdated(item.product.name, newQuantity, 'pcs');
         }
       }
     }
   };
 
-  const handleEditTags = (productId: string, unit: string, currentTags: ProductTag[]) => {
-    setEditingTags({ productId, unit });
+  const handleEditTags = (cartItemId: string, currentTags: ProductTag[]) => {
+    setEditingTags(cartItemId);
     setTempTags(currentTags);
   };
 
   const handleSaveTags = () => {
     if (editingTags) {
-      dispatch(updateTags({ 
-        productId: editingTags.productId, 
-        unit: editingTags.unit, 
-        tags: tempTags 
-      }));
+      dispatch(updateCartTags(editingTags, tempTags) as any);
       setEditingTags(null);
       setTempTags([]);
     }
@@ -95,16 +95,16 @@ export default function CartScreen() {
       
       <FlatList
         data={cartItems}
-        keyExtractor={(item) => `${item.productId}-${item.unit}`}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
           <View style={styles.cartItem}>
             <View style={styles.topRow}>
               <View style={styles.itemHeader}>
-                <Text style={styles.productImage}>{item.productImage}</Text>
+                <Text style={styles.productImage}>{item.product?.image || '📦'}</Text>
                 <View style={styles.itemDetails}>
-                  <Text style={styles.productName}>{item.productName}</Text>
-                  <Text style={styles.quantity}>{item.quantity} {item.unit}</Text>
+                  <Text style={styles.productName}>{item.product?.name || 'Unknown Product'}</Text>
+                  <Text style={styles.quantity}>{item.quantity} pcs</Text>
                   
                   {item.tags && item.tags.length > 0 && (
                     <View style={styles.tagsContainer}>
@@ -119,7 +119,7 @@ export default function CartScreen() {
               <Button
                 title="Remove"
                 variant="danger"
-                onPress={() => handleRemove(item.productId, item.unit)}
+                onPress={() => handleRemove(item.id)}
                 style={styles.removeButton}
               />
             </View>
@@ -128,7 +128,7 @@ export default function CartScreen() {
               <View style={styles.quantityControls}>
                 <TouchableOpacity 
                   style={styles.quantityButton}
-                  onPress={() => handleQuantityChange(item.productId, item.unit, -1)}
+                  onPress={() => handleQuantityChange(item.id, -1)}
                 >
                   <Text style={styles.quantityButtonText}>−</Text>
                 </TouchableOpacity>
@@ -137,7 +137,7 @@ export default function CartScreen() {
                 
                 <TouchableOpacity 
                   style={styles.quantityButton}
-                  onPress={() => handleQuantityChange(item.productId, item.unit, 1)}
+                  onPress={() => handleQuantityChange(item.id, 1)}
                 >
                   <Text style={styles.quantityButtonText}>+</Text>
                 </TouchableOpacity>
@@ -145,7 +145,7 @@ export default function CartScreen() {
 
               <TouchableOpacity
                 style={styles.editTagsButton}
-                onPress={() => handleEditTags(item.productId, item.unit, item.tags || [])}
+                onPress={() => handleEditTags(item.id, item.tags || [])}
               >
                 <Text style={styles.editTagsButtonText}>🏷️ Edit Tags</Text>
               </TouchableOpacity>

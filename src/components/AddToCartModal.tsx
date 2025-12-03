@@ -42,15 +42,15 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
   const handleAdd = () => {
     const qty = parseInt(quantity, 10);
     if (!isNaN(qty) && qty > 0 && product) {
-      // Check if product already exists in cart (any unit)
-      const productExistsWithDifferentUnit = cartItems.find(
-        item => item.productId === product.id && item.unit !== selectedUnit
+      // Check if product already exists in cart
+      const productExistsInCart = cartItems.find(
+        item => item.product_id === product.id
       );
 
-      if (productExistsWithDifferentUnit) {
+      if (productExistsInCart) {
         Alert.alert(
           'Product in Cart',
-          `${product.name} is already in your cart with ${productExistsWithDifferentUnit.quantity} ${productExistsWithDifferentUnit.unit}. Please remove it first or update the quantity in cart.`,
+          `${product.name} is already in your cart with ${productExistsInCart.quantity} items. Please remove it first or update the quantity in cart.`,
           [
             {
               text: 'View Cart',

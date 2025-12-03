@@ -1,15 +1,21 @@
 import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { Category, CategoryCard } from '@/components/CategoryCard';
-import { CATEGORIES } from '@/utils/categories';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { fetchCategories } from '@/store/thunks/categoriesThunks';
 
 export default function CategoriesScreen() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const categories = useAppSelector((state) => state.categories.categories);
+
+  useEffect(() => {
+    dispatch(fetchCategories() as any);
+  }, [dispatch]);
 
   const handleCategoryPress = (category: Category) => {
-    // Navigate for vegetables, supermarket, cleaning, and meats categories
-    if (category.id === '1' || category.id === '2' || category.id === '3' || category.id === '4') {
       router.push({
         pathname: './(products)/[categoryId]',
         params: {
@@ -17,7 +23,7 @@ export default function CategoriesScreen() {
           categoryName: category.name,
         },
       });
-    }
+ 
   };
 
   const renderCategoryCard = ({ item }: { item: Category }) => (
@@ -30,7 +36,7 @@ export default function CategoriesScreen() {
         <Text style={styles.title}>Categories</Text>
       </View>
       <FlatList
-        data={CATEGORIES}
+        data={categories}
         renderItem={renderCategoryCard}
         keyExtractor={(item) => item.id}
         numColumns={2}

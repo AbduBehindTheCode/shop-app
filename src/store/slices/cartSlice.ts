@@ -1,74 +1,77 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CartItem, ProductTag } from '../../types';
+import { CartItem } from '../../types';
 
 interface CartState {
   items: CartItem[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: CartState = {
   items: [],
+  loading: false,
+  error: null,
 };
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<{ 
-      productId: string; 
-      productName: string; 
-      productImage: string; 
-      quantity: number; 
-      unit: string;
-      tags?: ProductTag[];
-    }>) => {
-      const { productId, productName, productImage, quantity, unit, tags } = action.payload;
-      
-      const existingItem = state.items.find(item => item.productId === productId && item.unit === unit);
-      
-      if (existingItem) {
-        existingItem.quantity += quantity;
-        // Merge tags if new tags are provided
-        if (tags && tags.length > 0) {
-          const currentTags = existingItem.tags || [];
-          existingItem.tags = Array.from(new Set([...currentTags, ...tags]));
-        }
+    // Set cart items from database
+    setCart: (state, action: PayloadAction<CartItem[]>) => {
+      state.items = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    
+    // Add or update cart item (from database response)
+    addCartItem: (state, action: PayloadAction<CartItem>) => {
+      const existingIndex = state.items.findIndex(item => item.id === action.payload.id);
+      if (existingIndex >= 0) {
+        state.items[existingIndex] = action.payload;
       } else {
-        state.items.push({
-          productId,
-          productName,
-          productImage,
-          quantity,
-          unit,
-          tags: tags || [],
-        });
+        state.items.push(action.payload);
       }
     },
-    removeFromCart: (state, action: PayloadAction<{ productId: string; unit: string }>) => {
-      state.items = state.items.filter(item => 
-        !(item.productId === action.payload.productId && item.unit === action.payload.unit)
-      );
+    
+    // Remove cart item by ID
+    removeCartItem: (state, action: PayloadAction<string>) => {
+      state.items = state.items.filter(item => item.id !== action.payload);
     },
-    updateQuantity: (state, action: PayloadAction<{ productId: string; unit: string; quantity: number }>) => {
-      const item = state.items.find(item => 
-        item.productId === action.payload.productId && item.unit === action.payload.unit
-      );
-      if (item) {
-        item.quantity = action.payload.quantity;
+    
+    // Update cart item
+    updateCartItem: (state, action: PayloadAction<CartItem>) => {
+      const index = state.items.findIndex(item => item.id === action.payload.id);
+      if (index >= 0) {
+        state.items[index] = action.payload;
       }
     },
-    updateTags: (state, action: PayloadAction<{ productId: string; unit: string; tags: ProductTag[] }>) => {
-      const item = state.items.find(item => 
-        item.productId === action.payload.productId && item.unit === action.payload.unit
-      );
-      if (item) {
-        item.tags = action.payload.tags;
-      }
-    },
+    
+    // Clear entire cart
     clearCart: (state) => {
       state.items = [];
+    },
+    
+    // Loading states
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+      state.loading = false;
     },
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, updateTags, clearCart } = cartSlice.actions;
+export const { 
+  setCart, 
+  addCartItem, 
+  removeCartItem, 
+  updateCartItem, 
+  clearCart, 
+  setLoading, 
+  setError 
+} = cartSlice.actions;
+
 export default cartSlice.reducer;
