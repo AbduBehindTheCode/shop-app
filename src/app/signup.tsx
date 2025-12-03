@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { authService } from '@/services/auth.service';
 import { setAuthenticated } from '@/store/slices/authSlice';
 import { useAppDispatch } from '@/store/store';
 import { router } from 'expo-router';
@@ -42,18 +43,24 @@ export default function SignUpScreen() {
 
     setIsLoading(true);
     
-    // TODO: Implement actual registration with backend
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Sign up with Supabase
+      const { user } = await authService.signUp({
+        email,
+        password,
+        name,
+      });
       
-      // Update auth state
+      // Update Redux auth state
       dispatch(setAuthenticated({
         user: {
-          id: '1',
+          id: user.id,
           name: name,
           email: email,
         },
       }));
+      
+      setIsLoading(false);
       
       Alert.alert('Success', 'Account created successfully!', [
         {
@@ -61,7 +68,10 @@ export default function SignUpScreen() {
           onPress: () => router.replace('/(tabs)'),
         },
       ]);
-    }, 1000);
+    } catch (error: any) {
+      setIsLoading(false);
+      Alert.alert('Error', error.message || 'Failed to create account');
+    }
   };
 
   const handleBackToLogin = () => {

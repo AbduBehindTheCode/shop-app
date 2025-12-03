@@ -3,7 +3,9 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  partnerId?: string;
+  household_id: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // Product types
@@ -53,3 +55,15 @@ export interface Notification {
   createdAt: Date;
   read: boolean;
 }
+
+export interface SignUpRequest {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export interface SignInRequest {
+  email: string;
+  password: string;
+}
+

@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { ProfileAvatar } from '@/components/ui/ProfileAvatar';
+import { authService } from '@/services/auth.service';
+import { useAppSelector } from '@/store/store';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     SafeAreaView,
@@ -14,25 +16,69 @@ import {
 } from 'react-native';
 
 export default function AccountScreen() {
-  const [name, setName] = useState('John Doe');
-  const [email, setEmail] = useState('johndoe@example.com');
-  const [phone, setPhone] = useState('+1 234 567 8900');
-  const [address, setAddress] = useState('123 Main Street, City, Country');
+  const { user } = useAppSelector((state) => state.auth);
+  
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleSave = () => {
-    // TODO: Save to backend/storage
-    Alert.alert('Success', 'Profile updated successfully', [{ text: 'OK' }]);
-    setIsEditing(false);
+  // Load user data from Redux store
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+    }
+  }, [user]);
+
+  const handleSave = async () => {
+    try {
+      await authService.updateProfile({ name, email });
+      Alert.alert('Success', 'Profile updated successfully');
+      setIsEditing(false);
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to update profile');
+    }
   };
 
   const handleCancel = () => {
-    // Reset to original values (TODO: fetch from storage)
-    setName('John Doe');
-    setEmail('johndoe@example.com');
-    setPhone('+1 234 567 8900');
-    setAddress('123 Main Street, City, Country');
+    // Reset to original values from Redux store
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+    }
     setIsEditing(false);
+  };
+
+  const handleChangePassword = () => {
+    Alert.prompt(
+      'Change Password',
+      'Enter your new password (min 6 characters)',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Update',
+          onPress: async (newPassword?: string) => {
+            if (!newPassword || newPassword.length < 6) {
+              Alert.alert('Error', 'Password must be at least 6 characters');
+              return;
+            }
+            
+            try {
+              await authService.updatePassword(newPassword);
+              Alert.alert('Success', 'Password updated successfully');
+            } catch (error: any) {
+              Alert.alert('Error', error.message || 'Failed to update password');
+            }
+          },
+        },
+      ],
+      'secure-text'
+    );
   };
 
   return (
@@ -135,7 +181,7 @@ export default function AccountScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account Actions</Text>
           
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleChangePassword}>
             <Text style={styles.actionButtonText}>🔑 Change Password</Text>
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>

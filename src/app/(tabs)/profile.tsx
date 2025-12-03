@@ -1,12 +1,17 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ProfileAvatar } from '@/components/ui/ProfileAvatar';
 import { SettingsItem } from '@/components/ui/SettingsItem';
+import { authService } from '@/services/auth.service';
+import { setUnauthenticated } from '@/store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 
 export default function ProfileScreen() {
-  const [userName] = useState('John Doe');
+  const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const [userName] = useState(user?.name || 'User');
 
   const handleNotifications = () => {
     router.push('/notifications');
@@ -31,6 +36,32 @@ export default function ProfileScreen() {
     console.log('Navigate to about');
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await authService.signOut();
+              dispatch(setUnauthenticated());
+              router.replace('/login');
+            } catch (error: any) {
+              Alert.alert('Error', error.message || 'Failed to logout');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -38,7 +69,7 @@ export default function ProfileScreen() {
         <View style={styles.header}>
           <ProfileAvatar name={userName} size={100} />
           <Text style={styles.userName}>{userName}</Text>
-          <Text style={styles.userEmail}>johndoe@example.com</Text>
+          <Text style={styles.userEmail}>{user?.email || 'No email'}</Text>
         </View>
 
         {/* Settings Section */}
@@ -83,6 +114,17 @@ export default function ProfileScreen() {
             title="About"
             subtitle="Version 1.0.0"
             onPress={handleAbout}
+          />
+        </View>
+
+        {/* Logout Section */}
+        <View style={styles.section}>
+          <SettingsItem
+            icon="🚪"
+            title="Logout"
+            subtitle="Sign out of your account"
+            onPress={handleLogout}
+            danger
           />
         </View>
       </ScrollView>

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { authService } from '@/services/auth.service';
 import { setAuthenticated } from '@/store/slices/authSlice';
 import { useAppDispatch } from '@/store/store';
 import { router } from 'expo-router';
@@ -30,22 +31,30 @@ export default function LoginScreen() {
 
     setIsLoading(true);
     
-    // TODO: Implement actual authentication with backend
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Sign in with Supabase
+      const { user, profile } = await authService.signIn({
+        email,
+        password,
+      });
       
-      // Update auth state
+      // Update Redux auth state
       dispatch(setAuthenticated({
         user: {
-          id: '1',
-          name: 'John Doe',
-          email: email,
+          id: user.id,
+          name: profile.name,
+          email: user.email || email,
         },
       }));
       
+      setIsLoading(false);
+      
       // Navigate to main app
       router.replace('/(tabs)');
-    }, 1000);
+    } catch (error: any) {
+      setIsLoading(false);
+      Alert.alert('Error', error.message || 'Failed to sign in');
+    }
   };
 
   const handleSignUp = () => {

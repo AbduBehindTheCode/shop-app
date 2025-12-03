@@ -7,6 +7,7 @@ interface SettingsItemProps {
   subtitle?: string;
   onPress: () => void;
   showArrow?: boolean;
+  danger?: boolean;
 }
 
 export const SettingsItem: React.FC<SettingsItemProps> = ({
@@ -15,6 +16,7 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
   subtitle,
   onPress,
   showArrow = true,
+  danger = false,
 }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
@@ -23,7 +25,7 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
       </View>
       
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, danger && styles.dangerText]}>{title}</Text>
         {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
       </View>
       
@@ -79,5 +81,8 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#ccc',
     fontWeight: '300',
+  },
+  dangerText: {
+    color: '#ff3b30',
   },
 });
