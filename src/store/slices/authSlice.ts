@@ -6,6 +6,7 @@ interface AuthState {
     id: string;
     name: string;
     email: string;
+    household_id: string | null;
   } | null;
   loading: boolean;
 }

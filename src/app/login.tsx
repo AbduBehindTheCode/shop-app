@@ -5,16 +5,16 @@ import { useAppDispatch } from '@/store/store';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function LoginScreen() {
@@ -44,6 +44,7 @@ export default function LoginScreen() {
           id: user.id,
           name: profile.name,
           email: user.email || email,
+          household_id: profile.household_id,
         },
       }));
       
@@ -139,7 +140,7 @@ export default function LoginScreen() {
               disabled={isLoading}
             >
               <Text style={styles.signupButtonText}>
-                Don't have an account? <Text style={styles.signupLink}>Sign Up</Text>
+                Don&apos;t have an account? <Text style={styles.signupLink}>Sign Up</Text>
               </Text>
             </TouchableOpacity>
           </View>

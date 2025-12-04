@@ -1,7 +1,7 @@
 // Households Service
 // Manages household operations and member management
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '../supabase';
 import type { Household, User } from '../types';
 
 export const householdsService = {

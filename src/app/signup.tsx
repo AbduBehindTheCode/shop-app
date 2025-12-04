@@ -45,7 +45,7 @@ export default function SignUpScreen() {
     
     try {
       // Sign up with Supabase
-      const { user } = await authService.signUp({
+      const { user, profile } = await authService.signUp({
         email,
         password,
         name,
@@ -57,6 +57,7 @@ export default function SignUpScreen() {
           id: user.id,
           name: name,
           email: email,
+          household_id: profile.household_id,
         },
       }));
       

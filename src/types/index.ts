@@ -82,3 +82,24 @@ export interface UpdateCartItemRequest {
   quantity?: number;
   tags?: ProductTag[];
 }
+
+export interface Household {
+  id: string;
+  name?: string;
+  created_at?: string;
+  updated_at?: string;
+  members?: User[];
+}
+
+export interface HouseholdInvitation {
+  id: string;
+  household_id: string;
+  invited_user_id: string;
+  invited_by_user_id: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  created_at: string;
+  updated_at?: string;
+  household?: Household;
+  invited_by?: User;
+  invited_user?: User;
+}

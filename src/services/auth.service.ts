@@ -27,14 +27,22 @@ export const authService = {
         email,
         name,
       })
-      .select()
+      .select('*')
       .single();
 
     if (userError) {
       throw userError;
     }
 
-    return { user: authData.user, profile: userData };
+    return { 
+      user: authData.user, 
+      profile: {
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        household_id: userData.household_id,
+      }
+    };
   },
 
  
@@ -52,7 +60,7 @@ export const authService = {
  
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('*, household:households(*)')
+      .select('id, email, name, household_id')
       .eq('id', data.user.id)
       .single();
 
@@ -60,7 +68,16 @@ export const authService = {
       throw profileError;
     }
 
-    return { session: data.session, user: data.user, profile };
+    return { 
+      session: data.session, 
+      user: data.user, 
+      profile: {
+        id: profile.id,
+        email: profile.email,
+        name: profile.name,
+        household_id: profile.household_id,
+      }
+    };
   },
 
 
@@ -84,16 +101,20 @@ export const authService = {
 
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select(`
-        *,
-        household:households(*)
-      `)
+      .select('id, email, name, household_id, created_at, updated_at')
       .eq('id', user.id)
       .single();
 
     if (profileError) throw profileError;
 
-    return profile as User;
+    return {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      household_id: profile.household_id,
+      created_at: profile.created_at,
+      updated_at: profile.updated_at,
+    } as User;
   },
 
 
