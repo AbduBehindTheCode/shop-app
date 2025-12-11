@@ -5,7 +5,6 @@ import { Platform } from 'react-native';
 // Configure how notifications should be handled when app is in foreground
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
     shouldShowBanner: true,
@@ -19,7 +18,6 @@ export class NotificationService {
    */
   static async requestPermissions(): Promise<boolean> {
     if (!Device.isDevice) {
-      console.log('Notifications only work on physical devices');
       return false;
     }
 
@@ -32,7 +30,6 @@ export class NotificationService {
     }
 
     if (finalStatus !== 'granted') {
-      console.log('Notification permissions denied');
       return false;
     }
 
@@ -74,7 +71,6 @@ export class NotificationService {
         },
       });
 
-      console.log(`Daily notification scheduled at ${hour}:${minute}, ID: ${notificationId}`);
       return notificationId;
     } catch (error) {
       console.error('Error scheduling daily notification:', error);
@@ -171,7 +167,6 @@ export class NotificationService {
       // Calculate if date is in the past
       const now = new Date();
       if (saleDate < now) {
-        console.log('Sale date is in the past, not scheduling notification');
         return null;
       }
 

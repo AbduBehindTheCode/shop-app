@@ -1,7 +1,8 @@
 import { cartService } from '@/services/cart.service';
+import { notificationsService } from '@/services/notifications.service';
 import { CartItem, ProductTag } from '@/types';
 import { removeCartItem, setCart, setError, setLoading, updateCartItem } from '../slices/cartSlice';
-import { AppDispatch } from '../store';
+import { AppDispatch, RootState } from '../store';
 
 // Fetch cart from database
 export const fetchCart = () => async (dispatch: AppDispatch) => {
@@ -18,8 +19,8 @@ export const fetchCart = () => async (dispatch: AppDispatch) => {
 };
 
 // Add item to cart
-export const addToCart = (productId: string, quantity: number, tags: ProductTag[] = []) => 
-  async (dispatch: AppDispatch) => {
+export const addToCart = (productId: string, quantity: number, tags: ProductTag[] = [], productName?: string) => 
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       dispatch(setLoading(true));
       await cartService.addToCart({
@@ -28,10 +29,21 @@ export const addToCart = (productId: string, quantity: number, tags: ProductTag[
         tags,
       });
       
-
       const allItems = await cartService.getCart();
       dispatch(setCart(allItems as CartItem[]));
       dispatch(setLoading(false));
+
+      // Send notification to household members
+      const state = getState();
+      const userName = state.auth.user?.name || 'Someone';
+      const product = allItems.find(item => item.product_id === productId);
+      const itemName = productName || product?.product?.name || 'an item';
+      
+      try {
+        await notificationsService.notifyItemAdded(itemName, quantity, userName);
+      } catch (notifError) {
+        console.error('Failed to send notification:', notifError);
+      }
     } catch (error: any) {
       console.error('Add to cart error:', error);
       dispatch(setError(error.message));
@@ -40,15 +52,28 @@ export const addToCart = (productId: string, quantity: number, tags: ProductTag[
   };
 
 // Remove item from cart
-export const removeFromCart = (cartItemId: string) => async (dispatch: AppDispatch) => {
-  try {
-    await cartService.removeFromCart(cartItemId);
-    dispatch(removeCartItem(cartItemId));
-  } catch (error: any) {
-    console.error('Remove from cart error:', error);
-    dispatch(setError(error.message));
-  }
-};
+export const removeFromCart = (cartItemId: string, productName?: string) => 
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    try {
+      const state = getState();
+      const item = state.cart.items.find(i => i.id === cartItemId);
+      const itemName = productName || item?.product?.name || 'an item';
+      const userName = state.auth.user?.name || 'Someone';
+
+      await cartService.removeFromCart(cartItemId);
+      dispatch(removeCartItem(cartItemId));
+
+      // Send notification to household members
+      try {
+        await notificationsService.notifyItemRemoved(itemName, userName);
+      } catch (notifError) {
+        console.error('Failed to send notification:', notifError);
+      }
+    } catch (error: any) {
+      console.error('Remove from cart error:', error);
+      dispatch(setError(error.message));
+    }
+  };
 
 // Update cart item quantity
 export const updateCartQuantity = (cartItemId: string, quantity: number) => 

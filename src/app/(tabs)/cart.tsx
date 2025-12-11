@@ -18,6 +18,13 @@ export default function CartScreen() {
 
   useEffect(() => {
     dispatch(fetchCart() as any);
+    
+    // Auto-refresh cart every 5 seconds to see updates from other household members
+    const interval = setInterval(() => {
+      dispatch(fetchCart() as any);
+    }, 5000);
+    
+    return () => clearInterval(interval);
   }, [dispatch]);
 
   const handleRemove = (cartItemId: string) => {

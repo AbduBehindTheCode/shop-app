@@ -3,16 +3,28 @@ import { DEFAULT_NOTIFICATION_PREFERENCES, NotificationPreferences } from '../..
 
 interface NotificationsState {
   preferences: NotificationPreferences;
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: NotificationsState = {
   preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+  loading: false,
+  error: null,
 };
 
 const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    },
+    
     setDailyNotification: (state, action: PayloadAction<{ enabled: boolean; time?: string }>) => {
       state.preferences.dailyNotificationEnabled = action.payload.enabled;
       if (action.payload.time) {
@@ -51,6 +63,8 @@ const notificationsSlice = createSlice({
 });
 
 export const {
+  setLoading,
+  setError,
   setDailyNotification,
   setDailyNotificationTime,
   toggleCartAddNotification,

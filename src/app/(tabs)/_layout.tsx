@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { pushTokenService } from '@/services/pushToken.service';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { fetchCart } from '@/store/thunks/cartThunks';
 import { fetchProducts } from '@/store/thunks/productsThunks';
@@ -17,6 +18,17 @@ export default function TabLayout() {
     if (isAuthenticated) {
       dispatch(fetchCart() as any);
       dispatch(fetchProducts() as any);
+      
+      // Register push token for existing users
+      pushTokenService.registerPushToken()
+        .then((token) => {
+          if (token) {
+            console.log('Push token registered for existing user');
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to register push token:', error);
+        });
     }
   }, [isAuthenticated, dispatch]);
 

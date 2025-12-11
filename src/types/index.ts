@@ -41,11 +41,15 @@ export interface ShoppingList {
 // Notification types
 export interface Notification {
   id: string;
-  type: 'item_added' | 'item_purchased' | 'list_cleared';
+  user_id: string;
+  household_id: string | null;
+  type: 'item_added' | 'item_removed' | 'item_updated' | 'invitation_received' | 'member_joined';
+  title: string;
   message: string;
-  itemId?: string;
-  createdAt: Date;
-  read: boolean;
+  data?: any;
+  is_read: boolean;
+  created_at: string;
+  created_by?: User;
 }
 
 export interface SignUpRequest {

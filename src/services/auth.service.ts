@@ -1,6 +1,7 @@
 
 import { supabase } from '../supabase';
 import type { SignInRequest, SignUpRequest, User } from '../types';
+import { pushTokenService } from './pushToken.service';
 
 export const authService = {
 
@@ -32,6 +33,14 @@ export const authService = {
 
     if (userError) {
       throw userError;
+    }
+
+    // Register push token for notifications
+    try {
+      await pushTokenService.registerPushToken();
+    } catch (error) {
+      console.error('Failed to register push token:', error);
+      // Don't fail signup if push token registration fails
     }
 
     return { 
@@ -68,6 +77,14 @@ export const authService = {
       throw profileError;
     }
 
+    // Register push token for notifications
+    try {
+      await pushTokenService.registerPushToken();
+    } catch (error) {
+      console.error('Failed to register push token:', error);
+      // Don't fail login if push token registration fails
+    }
+
     return { 
       session: data.session, 
       user: data.user, 
@@ -82,6 +99,14 @@ export const authService = {
 
 
   signOut: async () => {
+    // Unregister push token before signing out
+    try {
+      await pushTokenService.unregisterPushToken();
+    } catch (error) {
+      console.error('Failed to unregister push token:', error);
+      // Continue with sign out even if unregistration fails
+    }
+
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   },
