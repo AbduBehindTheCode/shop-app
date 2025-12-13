@@ -5,14 +5,14 @@ import { useAppSelector } from '@/store/store';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function AccountScreen() {
@@ -79,6 +79,10 @@ export default function AccountScreen() {
       ],
       'secure-text'
     );
+  };
+
+  const handleDeleteAccount = () => {
+    router.push('/delete-account');
   };
 
   return (
@@ -191,7 +195,10 @@ export default function AccountScreen() {
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.actionButton, styles.dangerButton]}>
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.dangerButton]}
+            onPress={handleDeleteAccount}
+          >
             <Text style={[styles.actionButtonText, styles.dangerText]}>🗑️ Delete Account</Text>
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>

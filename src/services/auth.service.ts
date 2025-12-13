@@ -169,4 +169,20 @@ export const authService = {
     });
     if (error) throw error;
   },
+
+  requestAccountDeletion: async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    // Mark user for deletion in the database
+    const { error } = await supabase
+      .from('users')
+      .update({
+        deletion_requested_at: new Date().toISOString(),
+        deletion_requested: true,
+      })
+      .eq('id', user.id);
+
+    if (error) throw error;
+  },
 };
