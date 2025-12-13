@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the complete account deletion workflow in the Shoppy application, including user-facing steps, admin procedures, and technical implementation details.
+This document describes the complete account deletion workflow in the Shoppy+ application, including user-facing steps, admin procedures, and technical implementation details.
 
 ---
 
