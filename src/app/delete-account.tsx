@@ -25,10 +25,9 @@ export default function DeleteAccountScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   const dataToDelete = [
-    { icon: '👤', label: 'First Name' },
-    { icon: '👤', label: 'Last Name' },
+    { icon: '👤', label: 'Full Name' },
+    { icon: '📧', label: 'Email Address' },
     { icon: '📱', label: 'Phone Number' },
-    { icon: '🏠', label: 'Address' },
     { icon: '🗂️', label: 'All Personal Data' },
   ];
 

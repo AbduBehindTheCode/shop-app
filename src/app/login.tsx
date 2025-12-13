@@ -66,6 +66,10 @@ export default function LoginScreen() {
     Alert.alert('Forgot Password', 'Password reset feature coming soon!');
   };
 
+  const handlePrivacyPolicy = () => {
+    router.push('/privacy-policy');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -148,9 +152,10 @@ export default function LoginScreen() {
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              By continuing, you agree to our{'\n'}
-              <Text style={styles.link}>Terms of Service</Text> and{' '}
-              <Text style={styles.link}>Privacy Policy</Text>
+              By continuing, you agree to our
+              <TouchableOpacity onPress={handlePrivacyPolicy} style={styles.privacyLink}>
+                <Text style={styles.link}>Privacy Policy</Text>
+              </TouchableOpacity>
             </Text>
           </View>
         </ScrollView>
@@ -261,10 +266,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
     textAlign: 'center',
-    lineHeight: 18,
   },
   link: {
+    marginLeft: 3,
+        fontSize: 12,
     color: '#007AFF',
     fontWeight: '600',
+  },
+  privacyLink: {
+    display: 'flex',
   },
 });

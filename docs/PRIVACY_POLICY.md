@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last Updated:** December 13, 2024
+**Last Updated:** December 13, 2025
 
 ## 1. Introduction
 
@@ -19,16 +19,13 @@ If you do not agree with our policies and practices, please do not use our Servi
 We collect the following personal information when you create an account or use our Service:
 
 #### **Account Registration Information**
-- **First Name** - Required for account identification
-- **Last Name** - Required for account identification
+- **Full Name** - Required for account identification
 - **Email Address** - Required for account communication and authentication
-- **Phone Number** - Required for delivery and customer support
-- **Address** - Required for delivery purposes (street address, city, postal code, country)
+- **Phone Number** - Optional, used for customer support and notifications
 
 #### **How We Collect This Information**
 - During account registration/signup
 - When updating your profile
-- When placing orders or requesting services
 - When contacting customer support
 
 ### 2.2 Automatically Collected Information
@@ -58,9 +55,8 @@ We use the personal information we collect for the following purposes:
 
 ### 3.1 Core Service Delivery
 - Creating and managing your account
-- Processing and fulfilling your orders
-- Delivering products to your address
-- Contacting you about orders and deliveries
+- Contacting you about account updates and support requests
+- Maintaining service functionality
 
 ### 3.2 Communication
 - Sending transactional emails (order confirmations, account updates)
@@ -124,7 +120,7 @@ We retain your personal information for as long as your account is active and as
 
 When you request account deletion:
 - We process your deletion request within 48 hours
-- All personal data (name, email, phone, address) is permanently deleted
+- All personal data (name, email, phone) is permanently deleted
 - You will receive a confirmation email
 - Some data may be retained if required by law
 
@@ -175,7 +171,7 @@ You have the right to:
 - Access the personal information we hold about you
 - Request a copy of your data
 - Update or correct your information
-- Contact us at: privacy@shoppy.com
+- Contact us at: shoppy.dot.plus@gmail.com
 
 ### 7.2 Delete Your Account
 
@@ -187,7 +183,7 @@ You can request account deletion anytime through the app:
 
 ### 7.3 Data Portability
 
-You may request your data in a portable format. Contact us at: privacy@shoppy.com
+You may request your data in a portable format. Contact us at: shoppy.dot.plus@gmail.com
 
 ### 7.4 Opt-Out of Communications
 
@@ -208,7 +204,7 @@ If we discover we've collected information from a child under 13 without parenta
 
 ### 8.3 Contact
 
-If you believe we've collected information from a child, please contact: privacy@shoppy.com
+If you believe we've collected information from a child, please contact: shoppy.dot.plus@gmail.com
 
 ---
 
@@ -249,8 +245,7 @@ Your continued use of Shoppy+ following changes constitutes your acceptance of t
 
 For questions about this Privacy Policy or our privacy practices, please contact:
 
-**Email:** privacy@shoppy.com  
-**Support Email:** shoppy.dot.plus@gmail.com  
+**Email:** shoppy.dot.plus@gmail.com  
 
 ### 11.2 Response Time
 
@@ -287,7 +282,7 @@ If you are a California resident, you have the right to:
 - Opt-out of the sale of personal information
 - Non-discrimination for exercising your rights
 
-To exercise these rights, email: privacy@shoppy.com
+To exercise these rights, email: shoppy.dot.plus@gmail.com
 
 ---
 
@@ -319,13 +314,13 @@ This Privacy Policy is provided for informational purposes. While we strive for 
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2024-12-13 | Initial Privacy Policy for Play Store |
+| 1.0 | 2025-12-13 | Initial Privacy Policy for Play Store |
 
 ---
 
 **Status:** Active  
 **Document Owner:** Admin Team  
-**Last Reviewed:** December 13, 2024
+**Last Reviewed:** December 13, 2025
 
 ---
 

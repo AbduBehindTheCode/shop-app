@@ -21,7 +21,6 @@ export default function AccountScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   // Load user data from Redux store
@@ -146,19 +145,6 @@ export default function AccountScreen() {
               editable={isEditing}
               placeholder="Enter your phone"
               keyboardType="phone-pad"
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={[styles.input, styles.textArea, !isEditing && styles.inputDisabled]}
-              value={address}
-              onChangeText={setAddress}
-              editable={isEditing}
-              placeholder="Enter your address"
-              multiline
-              numberOfLines={3}
             />
           </View>
         </View>

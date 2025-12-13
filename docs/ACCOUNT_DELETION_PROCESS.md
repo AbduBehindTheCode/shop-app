@@ -80,10 +80,9 @@ When an account is deleted, the following data is permanently removed from our s
 
 | Data Type | Details |
 |-----------|---------|
-| **👤 First Name** | User's first name from profile |
-| **👤 Last Name** | User's last name from profile |
-| **📱 Phone Number** | Associated phone number |
-| **🏠 Address** | Delivery/billing address |
+| **👤 Full Name** | User's full name from profile |
+| **📧 Email Address** | Associated email address |
+| **📱 Phone Number** | Contact phone number |
 | **🗂️ All Personal Data** | Any other stored personal information |
 
 ---
