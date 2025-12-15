@@ -46,6 +46,7 @@ export default function LoginScreen() {
           id: user.id,
           name: profile.name,
           email: user.email || email,
+          phone_number: profile.phone_number,
           household_id: profile.household_id,
         },
       }));
