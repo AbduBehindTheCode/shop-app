@@ -28,12 +28,13 @@ export default function AccountScreen() {
     if (user) {
       setName(user.name || '');
       setEmail(user.email || '');
+      setPhone(user.phone_number || '');
     }
   }, [user]);
 
   const handleSave = async () => {
     try {
-      await authService.updateProfile({ name, email });
+      await authService.updateProfile({ name, email, phone_number: phone });
       Alert.alert('Success', 'Profile updated successfully');
       setIsEditing(false);
     } catch (error: any) {
@@ -46,6 +47,7 @@ export default function AccountScreen() {
     if (user) {
       setName(user.name || '');
       setEmail(user.email || '');
+      setPhone(user.phone_number || '');
     }
     setIsEditing(false);
   };

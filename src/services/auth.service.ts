@@ -3,10 +3,10 @@ import { supabase } from '../supabase';
 import type { SignInRequest, SignUpRequest, User } from '../types';
 import { pushTokenService } from './pushToken.service';
 
+
 export const authService = {
 
-  signUp: async ({ email, password, name }: SignUpRequest) => {
-    
+  signUp: async ({ email, password, name, phone_number }: SignUpRequest) => {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -19,7 +19,6 @@ export const authService = {
       throw new Error('User creation failed');
     }
 
-
     // Create user profile (triggers household creation)
     const { data: userData, error: userError } = await supabase
       .from('users')
@@ -27,6 +26,7 @@ export const authService = {
         id: authData.user.id,
         email,
         name,
+        phone_number,
       })
       .select('*')
       .single();
@@ -49,6 +49,7 @@ export const authService = {
         id: userData.id,
         email: userData.email,
         name: userData.name,
+        phone_number: userData.phone_number,
         household_id: userData.household_id,
       }
     };
@@ -67,9 +68,10 @@ export const authService = {
     }
 
  
+
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('id, email, name, household_id')
+      .select('id, email, name, phone_number, household_id')
       .eq('id', data.user.id)
       .single();
 
@@ -92,6 +94,7 @@ export const authService = {
         id: profile.id,
         email: profile.email,
         name: profile.name,
+        phone_number: profile.phone_number,
         household_id: profile.household_id,
       }
     };
@@ -143,7 +146,7 @@ export const authService = {
   },
 
 
-  updateProfile: async (updates: { name?: string; email?: string }) => {
+  updateProfile: async (updates: { name?: string; email?: string; phone_number?: string }) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 

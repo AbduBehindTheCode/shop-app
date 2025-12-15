@@ -3,6 +3,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  phone_number?: string;
   household_id: string | null;
   created_at?: string;
   updated_at?: string;
@@ -56,6 +57,7 @@ export interface SignUpRequest {
   email: string;
   password: string;
   name: string;
+  phone_number?: string;
 }
 
 export interface SignInRequest {
