@@ -31,7 +31,6 @@ export default function AccountScreen() {
       setPhone(user.phone_number || '');
     }
   }, [user]);
-
   const handleSave = async () => {
     try {
       await authService.updateProfile({ name, email, phone_number: phone });
@@ -103,11 +102,11 @@ export default function AccountScreen() {
         {/* Profile Avatar Section */}
         <View style={styles.avatarSection}>
           <ProfileAvatar name={name} size={100} />
-          {isEditing && (
+          {/* {isEditing && (
             <TouchableOpacity style={styles.changePhotoButton}>
               <Text style={styles.changePhotoText}>Change Photo</Text>
             </TouchableOpacity>
-          )}
+          )} */}
         </View>
 
         {/* Profile Information */}
@@ -178,10 +177,7 @@ export default function AccountScreen() {
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
-            <Text style={styles.actionButtonText}>📧 Email Preferences</Text>
-            <Text style={styles.actionArrow}>›</Text>
-          </TouchableOpacity>
+  
 
           <TouchableOpacity 
             style={[styles.actionButton, styles.dangerButton]}
